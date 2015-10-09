@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <meta charset="utf-8">
+  <title>d3 y foursquare API (v0)</title>
+</head>
+<body>
+
+<script>
+  var data;
+var url = "https://api.foursquare.com/v2/venues/search?client_id=RYBTHFPYMS44VDOB5U3P5JZNVETCBEO2ZTWIF5VHDCMKKEOS&client_secret=WV43Z4BKYQ0LFRKCHDII5SO1VT1RKG0504A5NFOLSA0AZDKU&v=20130815&ll=-34.59,-58.39&query=crossfit";
+
+d3.json(url, function(error, json) {
+  if (error) return console.warn(error);
+  data = json;
+  visualizeit();
+});
+
+function visualizeit() {
+  console.log(data);
+  
+  d3.select("body")
+    .selectAll("p")
+    .data(data.response.venues).enter().append("p")
+    .text( function(d,i) { 
+      return i + ". " + d.name + " " + d.location.lat + "," + d.location.lng
+     });
+  
+} 
+</script>
+  
+</body>
+</html>
