@@ -23,7 +23,7 @@
 	    <label for="venueTypeSelect">Lugares:</label>
 	    <select id="venueTypeSelect">
 			<option value="restaurant">restaurant</option>
-			<option value="gym">gimnasio</option>
+			<option value="gimnasio">gimnasio</option>
 			<option value="supermercado">supermercado</option>
 		</select>
 
@@ -54,7 +54,8 @@
 		}
 
 		function getQuery(){
-			return $('#venueTypeSelect').val();
+			//return $('#venueTypeSelect').val();
+			return $('#query').val();
 		}
 
 		function drawMap(){
@@ -82,15 +83,16 @@
 
 		}
 
-		function drawMarker(map, position, tittle, content){
-			L.marker(position).addTo(map)
+		function drawMarker(map, position, tittle, content, radix){
+			L.circleMarker(position).addTo(map).setRadius(radix)
 				.bindPopup("<b>"+tittle+"</b><br />"+content+".").openPopup();
 		}
 
 		function drawVenues(map, query){
 			$.map(findVenues(query),
 				function(aVenue){
-					drawMarker(map,aVenue.location,aVenue.name,"descripcion");
+					var radix = aVenue.share * 100;
+					drawMarker(map, aVenue.location, aVenue.name, aVenue.address+" - "+aVenue.usersCount+" - "+aVenue.share*100+"%", radix);
 				}			
 			);
 		}
@@ -108,13 +110,28 @@
 								function(element){
 									 venues.push(
 										{'name':element.name,
-										 'location':[element.location.lat, element.location.lng]
+										 'location':[element.location.lat, element.location.lng],
+										 'address':element.location.address,
+										 'usersCount':element.stats.usersCount,
+										 'share':0
 										}
 									  );
 								} 
 							);
 					    }
 				});
+
+			//sumo la cantidad de usuario de todos los venues
+			var totalUsers = 0;
+			$.map(venues, function(aVenue){
+				totalUsers += aVenue.usersCount;
+			});
+
+			//calculo el porcentaje que le corresponde a cada venue
+			$.map(venues, function(aVenue){
+				aVenue.share = aVenue.usersCount/totalUsers;
+			});
+
 			return venues;
 		}
 
