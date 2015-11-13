@@ -56,7 +56,10 @@
 	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 	<script>
 
+		var map;
+		var markers = new Array();
 		window.onload = loadEnviroment;
+
 
 		function loadEnviroment(){
 			//cargo selector
@@ -64,6 +67,9 @@
 
 			//busco mi localizacion de estar disponible
 			initGeolocation();
+
+			//imprimo el mapa
+			initMap();
 		}
 
 		function initGeolocation(){
@@ -104,37 +110,53 @@
 			return [$('#mylat').val(), $('#mylng').val()];
 		}
 
-		function drawMap(){
-
-			var map = L.map('map').setView(findLocation(), 13);
+		function initMap(){
+			map = L.map('map').setView(findLocation(), 13);
 
 			L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoic2NhbWlzYXkiLCJhIjoiY2lnbnpmcWJ1MDBlZ245a29paHUyaXhxdCJ9.QvMEJGT_ga3JaFnHW74IIQ', {
 				maxZoom: 18,
 				id: 'mapbox.streets'
 			}).addTo(map);
+		}
 
+		function drawMap(){
 			var query = getQuery();
 
-			drawVenues(map,query);
+			removeMarkers();
+
+			var location = findLocation();
+			map.setView(location, 13);
+
+			drawVenues(map,query,location);
 
 		}
 
 		function drawMarker(map, position, tittle, content, radix){
-			L.circleMarker(position).addTo(map).setRadius(radix)
+			return L.circleMarker(position).addTo(map).setRadius(radix)
 				.bindPopup("<b>"+tittle+"</b><br />"+content+".").openPopup();
 		}
 
-		function drawVenues(map, query){
-			$.map(findVenues(query),
+		function drawVenues(map, query, location){
+			$.map(findVenues(query,location),
 				function(aVenue){
 					var radix = aVenue.share * 100;
-					drawMarker(map, aVenue.location, aVenue.name, aVenue.address+" - "+aVenue.usersCount+" - "+aVenue.share*100+"%", radix);
+					var share = new Number(aVenue.share*100).toFixed(2) + " %";
+					var marker = drawMarker(map, aVenue.location, aVenue.name, aVenue.address+" - "+aVenue.usersCount+" - "+share, radix);
+					addMarker(marker);
 				}			
 			);
 		}
 
-		function findVenues(query){
-			var url = "https://api.foursquare.com/v2/venues/search?client_id=RYBTHFPYMS44VDOB5U3P5JZNVETCBEO2ZTWIF5VHDCMKKEOS&client_secret=WV43Z4BKYQ0LFRKCHDII5SO1VT1RKG0504A5NFOLSA0AZDKU&v=20130815&ll=-34.59,-58.39&query="+query;
+		function addMarker(marker){
+			markers.push(marker);
+		}
+
+		function removeMarkers(){
+			$.map(markers,function(aMarker){map.removeLayer(aMarker)});
+		}
+
+		function findVenues(query,location){
+			var url = "https://api.foursquare.com/v2/venues/search?client_id=RYBTHFPYMS44VDOB5U3P5JZNVETCBEO2ZTWIF5VHDCMKKEOS&client_secret=WV43Z4BKYQ0LFRKCHDII5SO1VT1RKG0504A5NFOLSA0AZDKU&v=20130815&ll="+location[0]+","+location[1]+"&query="+query;
 			var venues = new Array();
 			$.ajax(
 				{
@@ -165,7 +187,7 @@
 
 			//calculo el porcentaje que le corresponde a cada venue
 			$.map(venues, function(aVenue){
-				aVenue.share = new Number(aVenue.usersCount/totalUsers).toFixed(2);;
+				aVenue.share = aVenue.usersCount/totalUsers;
 			});
 
 			return venues;
