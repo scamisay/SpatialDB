@@ -46,6 +46,12 @@
   	<button class="btn btn-default" onclick="drawMap();false;">
   		Buscar
   	</button>
+
+  	<div class="container" style="width:90%;">
+	  <h4>Los mas concurridos</h4>
+	  <ul class="list-group" id="mostVisited">
+	  </ul>
+	</div>
 </div>
 	
 	
@@ -117,6 +123,15 @@
 				maxZoom: 18,
 				id: 'mapbox.streets'
 			}).addTo(map);
+
+
+			function onMapClick(e) {
+				$('#mylat').val(e.latlng.lat);
+				$('#mylng').val(e.latlng.lng);
+			        
+			}
+
+			map.on('click', onMapClick);
 		}
 
 		function drawMap(){
@@ -137,7 +152,8 @@
 		}
 
 		function drawVenues(map, query, location){
-			$.map(findVenues(query,location),
+			var venues = findVenues(query,location);
+			$.map(venues,
 				function(aVenue){
 					var radix = aVenue.share * 100;
 					var share = new Number(aVenue.share*100).toFixed(2) + " %";
@@ -145,6 +161,26 @@
 					addMarker(marker);
 				}			
 			);
+
+			listMostPopularVenues(venues);
+		}
+
+		function listMostPopularVenues(venues){
+			var sortedVenues = venues.sort(
+					function(a,b){
+						return b.usersCount - a.usersCount;
+					}
+				);
+
+			$('#mostVisited').empty();
+
+			for(var i = 0; i < 3 && i < sortedVenues.length ; i++){
+				var li = '<li class="list-group-item">'+(i+1)+' - '+sortedVenues[i].name+' - '+sortedVenues[i].usersCount+' usuarios</li>';
+				$('#mostVisited').append(li);
+			}
+			
+			
+
 		}
 
 		function addMarker(marker){
