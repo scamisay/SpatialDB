@@ -51,11 +51,42 @@
 		function loadEnviroment(){
 			//cargo selector
 			$('#venueTypeSelect').select2();
+
+			//busco mi localizacion de estar disponible
+			initGeolocation();
+		}
+
+		function initGeolocation(){
+		    if(navigator.geolocation)
+		        navigator.geolocation.getCurrentPosition(handleGetCurrentPosition, onError);
+		}
+
+		function handleGetCurrentPosition(location){
+		    var lat = location.coords.latitude;
+		    var lng = location.coords.longitude;
+		    alert(lat+","+lng);
+		}
+		function onError(){alert('La geolocalizacion esta descativada en tu equipo');}
+
+		function findQueryFromSelect(){
+			return $('#venueTypeSelect').val();
+		}
+
+		function findQueryFromFreeText(){
+			return $('#query').val();
+		}
+
+		function hasFreeText(){
+			return $.trim(findQueryFromFreeText()) != "";
 		}
 
 		function getQuery(){
-			//return $('#venueTypeSelect').val();
-			return $('#query').val();
+			if(hasFreeText()){
+				return findQueryFromFreeText();
+			}else{
+				return findQueryFromSelect();
+			}
+			
 		}
 
 		function drawMap(){
@@ -69,17 +100,6 @@
 			var query = getQuery();
 
 			drawVenues(map,query);
-
-			var popup = L.popup();
-
-			function onMapClick(e) {
-				popup
-					.setLatLng(e.latlng)
-					.setContent("You clicked the map at " + e.latlng.toString())
-					.openOn(map);
-			}
-
-			map.on('click', onMapClick);
 
 		}
 
@@ -129,7 +149,7 @@
 
 			//calculo el porcentaje que le corresponde a cada venue
 			$.map(venues, function(aVenue){
-				aVenue.share = aVenue.usersCount/totalUsers;
+				aVenue.share = new Number(aVenue.usersCount/totalUsers).toFixed(2);;
 			});
 
 			return venues;
