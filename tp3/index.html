@@ -32,9 +32,7 @@
 	<div class="form-group">
 	    <label for="venueTypeSelect">Lugares:</label>
 	    <select id="venueTypeSelect">
-			<option value="restaurant">restaurant</option>
-			<option value="gimnasio">gimnasio</option>
-			<option value="supermercado">supermercado</option>
+			
 		</select>
 
 	</div>
@@ -69,13 +67,30 @@
 
 		function loadEnviroment(){
 			//cargo selector
-			$('#venueTypeSelect').select2();
+			$('#venueTypeSelect').select2(
+				{
+            		placeholder: "Elegi una de las recomendaciones",
+            		width: '100%'
+            	}
+            );
 
 			//busco mi localizacion de estar disponible
 			initGeolocation();
 
 			//imprimo el mapa
 			initMap();
+
+			refreshSelectAdvices($('#mylat').val(),$('#mylng').val()) ;
+
+			drawYouAreHere();
+		}
+
+		var mHere;
+
+		function drawYouAreHere(){
+			if(mHere != undefined)
+				map.removeLayer(mHere)
+			mHere = L.marker(findLocation()).addTo(map);
 		}
 
 		function initGeolocation(){
@@ -126,14 +141,48 @@
 
 
 			function onMapClick(e) {
-				$('#mylat').val(e.latlng.lat);
-				$('#mylng').val(e.latlng.lng);
-			        
+				var lat = e.latlng.lat;
+				var lng = e.latlng.lng;
+				$('#mylat').val(lat);
+				$('#mylng').val(lng);
+			    refreshSelectAdvices(lat,lng);
 			}
 
 			map.on('click', onMapClick);
 		}
 
+		function refreshSelectAdvices(lat,lng){
+			var url = "https://api.foursquare.com/v2/venues/explore?client_id=RYBTHFPYMS44VDOB5U3P5JZNVETCBEO2ZTWIF5VHDCMKKEOS&client_secret=WV43Z4BKYQ0LFRKCHDII5SO1VT1RKG0504A5NFOLSA0AZDKU&v=20130815&ll="+lat+","+lng;
+			
+			
+
+			var venues = new Array();
+			$.ajax(
+				{
+				url: url, 
+				async: false,
+				success: function(result){
+					        $.map(
+								result.response.groups[0].items, 
+								function(element){
+									 venues.push(
+										element.venue.name
+									  );
+								} 
+							);
+					    }
+				});
+
+			var select = $('#venueTypeSelect');
+			select.empty();
+			$.map(venues,function(e){
+				select.append('<option value="'+e+'">'+e+'</option>');
+			});
+
+			drawYouAreHere();
+		}
+
+		
 		function drawMap(){
 			var query = getQuery();
 
