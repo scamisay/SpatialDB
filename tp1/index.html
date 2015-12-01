@@ -1,1 +1,637 @@
-aca va el tp1
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Leaflet Quick Start Guide Example</title>
+	<meta charset="utf-8" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+	
+  
+</head>
+<body>
+
+<div class="container" style="width:100%; float:left;">
+	<div id="map" style="width: 100%; height: 700px"></div>
+</div>
+
+</body>
+
+	<script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+	<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+
+	<script>
+		
+		var map;
+		var markers = new Array();
+		window.onload = loadEnviroment;
+
+
+		function loadEnviroment(){
+			initMap();
+			drawPlaces();
+		}
+
+		function initMap(){
+			map = L.map('map').setView([-34.597066, -58.397323], 18);
+
+			L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoic2NhbWlzYXkiLCJhIjoiY2lnbnpmcWJ1MDBlZ245a29paHUyaXhxdCJ9.QvMEJGT_ga3JaFnHW74IIQ', {
+				maxZoom: 18,
+				id: 'mapbox.streets'
+			}).addTo(map);
+		}
+
+		function drawPlaces(){
+
+			var home = {
+		      "calle" : "ALVEAR, MARCELO T. De",
+		      "altura" : 2010,
+		      "descripcion" : "home",
+		      "x" : "-58.396333",
+		      "y" : "-34.597329"
+		    };
+
+		    L.circleMarker(findLocation(home)).addTo(map).setRadius(10)
+		    					.bindPopup("<b>"+getDireccion(home)+"</b><br />"+getPlaceInfo(home)).openPopup();
+
+			$(data).each(
+				function(i,e){
+					L.marker(findLocation(this)).addTo(map)
+					.bindPopup("<b>"+getDireccion(this)+"</b><br />"+getPlaceInfo(this)).openPopup();
+				}
+			);
+			
+		}
+
+		function getDireccion(e){
+			return e.calle +" "+e.altura;
+		}
+
+		function getPlaceInfo(e){
+			return e.descripcion;
+		}
+
+		function findLocation(e){
+			return [e.y, e.x];
+		}
+
+
+var data = [
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 2089,
+      "descripcion" : "preocupacional",
+      "x" : "-58.397333",
+      "y" : "-34.597205"
+    },
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 2083,
+      "descripcion" : "departamento",
+      "x" : "-58.397246",
+      "y" : "-34.597209"
+    },
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 2081,
+      "descripcion" : "negocio dental",
+      "x" : "-58.397159",
+      "y" : "-34.597213"
+    },
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 2075,
+      "descripcion" : "negocio dental",
+      "x" : "-58.397066",
+      "y" : "-34.597217"
+    },
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 2069,
+      "descripcion" : "negocio dental",
+      "x" : "-58.396971",
+      "y" : "-34.597222"
+    },
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 2065,
+      "descripcion" : "negocio dental",
+      "x" : "-58.396878",
+      "y" : "-34.597226"
+    },
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 2051,
+      "descripcion" : "academia aleman",
+      "x" : "-58.396791",
+      "y" : "-34.597230"
+    },
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 2043,
+      "descripcion" : "farmacia",
+      "x" : "-58.396706",
+      "y" : "-34.597234"
+    },
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 2029,
+      "descripcion" : "cochera",
+      "x" : "-58.396579",
+      "y" : "-34.597240"
+    },
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 2017,
+      "descripcion" : "departamento",
+      "x" : "-58.396453",
+      "y" : "-34.597246"
+    },
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 2086,
+      "descripcion" : "departamento",
+      "x" : "-58.397267",
+      "y" : "-34.597283"
+    },
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 2084,
+      "descripcion" : "departamento",
+      "x" : "-58.397175",
+      "y" : "-34.597288"
+    },
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 2076,
+      "descripcion" : "negocio dental",
+      "x" : "-58.397073",
+      "y" : "-34.597293"
+    },
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 2064,
+      "descripcion" : "departamento",
+      "x" : "-58.396935",
+      "y" : "-34.597299"
+    },
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 2054,
+      "descripcion" : "cochera",
+      "x" : "-58.396777",
+      "y" : "-34.597306"
+    },
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 2042,
+      "descripcion" : "kiosco",
+      "x" : "-58.396651",
+      "y" : "-34.597312"
+    },
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 2030,
+      "descripcion" : "departamento",
+      "x" : "-58.396547",
+      "y" : "-34.597317"
+    },
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 2020,
+      "descripcion" : "departamento",
+      "x" : "-58.396438",
+      "y" : "-34.597322"
+    },
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 2008,
+      "descripcion" : "negocio dental",
+      "x" : "-58.396333",
+      "y" : "-34.597329"
+    },
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 1987,
+      "descripcion" : "departamento",
+      "x" : "-58.395798",
+      "y" : "-34.597258"
+    },
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 1981,
+      "descripcion" : "verduleria",
+      "x" : "-58.395652",
+      "y" : "-34.597254"
+    },
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 1957,
+      "descripcion" : "departamento",
+      "x" : "-58.395466",
+      "y" : "-34.597249"
+    },
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 1947,
+      "descripcion" : "departamento",
+      "x" : "-58.395299",
+      "y" : "-34.597244"
+    },
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 1935,
+      "descripcion" : "departamento",
+      "x" : "-58.395185",
+      "y" : "-34.597241"
+    },
+    
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 1932,
+      "descripcion" : "peluqueria",
+      "x" : "-58.395058",
+      "y" : "-34.597316"
+    },
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 1934,
+      "descripcion" : "departamento",
+      "x" : "-58.395151",
+      "y" : "-34.597319"
+    },
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 1940,
+      "descripcion" : "departamento",
+      "x" : "-58.395281",
+      "y" : "-34.597322"
+    },
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 1950,
+      "descripcion" : "departamento",
+      "x" : "-58.395407",
+      "y" : "-34.597326"
+    },
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 1964,
+      "descripcion" : "negocio dental",
+      "x" : "-58.395492",
+      "y" : "-34.597328"
+    },
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 1968,
+      "descripcion" : "ferreteria",
+      "x" : "-58.395578",
+      "y" : "-34.597330"
+    },
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 1978,
+      "descripcion" : "casa",
+      "x" : "-58.395668",
+      "y" : "-34.597333"
+    },
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 1980,
+      "descripcion" : "casa",
+      "x" : "-58.395754",
+      "y" : "-34.597335"
+    },
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 1984,
+      "descripcion" : "casa",
+      "x" : "-58.395838",
+      "y" : "-34.597337"
+    },
+    {
+      "calle" : "ALVEAR, MARCELO T. De",
+      "altura" : 2002,
+      "descripcion" : "club del comic",
+      "x" : "-58.396200",
+      "y" : "-34.597333"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 1095,
+      "descripcion" : "negocio",
+      "x" : "-58.396064",
+      "y" : "-34.596038"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 1063,
+      "descripcion" : "departamento",
+      "x" : "-58.396062",
+      "y" : "-34.596277"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 1057,
+      "descripcion" : "negocio",
+      "x" : "-58.396062",
+      "y" : "-34.596385"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 1053,
+      "descripcion" : "cochera",
+      "x" : "-58.396063",
+      "y" : "-34.596469"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 1051,
+      "descripcion" : "verduleria",
+      "x" : "-58.396064",
+      "y" : "-34.596577"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 1037,
+      "descripcion" : "cochera",
+      "x" : "-58.396065",
+      "y" : "-34.596700"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 1033,
+      "descripcion" : "departamento",
+      "x" : "-58.396066",
+      "y" : "-34.596806"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 1027,
+      "descripcion" : "negocio",
+      "x" : "-58.396067",
+      "y" : "-34.596892"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 1015,
+      "descripcion" : "ferreteria",
+      "x" : "-58.396067",
+      "y" : "-34.596962"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 1011,
+      "descripcion" : "departamento",
+      "x" : "-58.396068",
+      "y" : "-34.597050"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 1007,
+      "descripcion" : "casa",
+      "x" : "-58.396068",
+      "y" : "-34.597176"
+    },
+        {
+      "calle" : "AYACUCHO",
+      "altura" : 993,
+      "descripcion" : "departamento",
+      "x" : "-58.396043",
+      "y" : "-34.597480"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 991,
+      "descripcion" : "obra en construcción",
+      "x" : "-58.396027",
+      "y" : "-34.597549"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 983,
+      "descripcion" : "departamento",
+      "x" : "-58.396008",
+      "y" : "-34.597663"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 973,
+      "descripcion" : "negocio de comidas",
+      "x" : "-58.395991",
+      "y" : "-34.597769"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 965,
+      "descripcion" : "negocio dental",
+      "x" : "-58.395973",
+      "y" : "-34.597879"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 953,
+      "descripcion" : "escuela",
+      "x" : "-58.395947",
+      "y" : "-34.598036"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 951,
+      "descripcion" : "veterinaria",
+      "x" : "-58.395924",
+      "y" : "-34.598175"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 931,
+      "descripcion" : "negocio comida arabe",
+      "x" : "-58.395910",
+      "y" : "-34.598262"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 927,
+      "descripcion" : "casa",
+      "x" : "-58.395898",
+      "y" : "-34.598331"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 921,
+      "descripcion" : "casa",
+      "x" : "-58.395887",
+      "y" : "-34.598398"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 911,
+      "descripcion" : "casa",
+      "x" : "-58.395876",
+      "y" : "-34.598467"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 909,
+      "descripcion" : "casa",
+      "x" : "-58.395865",
+      "y" : "-34.598535"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 914,
+      "descripcion" : "supermercado chino",
+      "x" : "-58.395962",
+      "y" : "-34.598483"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 922,
+      "descripcion" : "local bailable",
+      "x" : "-58.395978",
+      "y" : "-34.598388"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 926,
+      "descripcion" : "departamento",
+      "x" : "-58.395991",
+      "y" : "-34.598309"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 930,
+      "descripcion" : "cochera",
+      "x" : "-58.396008",
+      "y" : "-34.598204"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 940,
+      "descripcion" : "instituto de salud",
+      "x" : "-58.396024",
+      "y" : "-34.598107"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 950,
+      "descripcion" : "locutorio",
+      "x" : "-58.396034",
+      "y" : "-34.598045"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 962,
+      "descripcion" : "departamento",
+      "x" : "-58.396044",
+      "y" : "-34.597983"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 966,
+      "descripcion" : "departamento",
+      "x" : "-58.396055",
+      "y" : "-34.597915"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 970,
+      "descripcion" : "departamento",
+      "x" : "-58.396068",
+      "y" : "-34.597839"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 980,
+      "descripcion" : "departamento",
+      "x" : "-58.396085",
+      "y" : "-34.597735"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 984,
+      "descripcion" : "lavadero",
+      "x" : "-58.396102",
+      "y" : "-34.597635"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 990,
+      "descripcion" : "imprenta",
+      "x" : "-58.396127",
+      "y" : "-34.597478"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 1012,
+      "descripcion" : "departamento",
+      "x" : "-58.396159",
+      "y" : "-34.597122"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 1022,
+      "descripcion" : "departamento",
+      "x" : "-58.396158",
+      "y" : "-34.596980"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 1024,
+      "descripcion" : "panaderia",
+      "x" : "-58.396157",
+      "y" : "-34.596901"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 1034,
+      "descripcion" : "departamento",
+      "x" : "-58.396156",
+      "y" : "-34.596794"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 1050,
+      "descripcion" : "instituto de cienciologia",
+      "x" : "-58.396155",
+      "y" : "-34.596689"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 1060,
+      "descripcion" : "departamento",
+      "x" : "-58.396155",
+      "y" : "-34.596588"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 1072,
+      "descripcion" : "iglesia",
+      "x" : "-58.396152",
+      "y" : "-34.596333"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 1082,
+      "descripcion" : "departamento",
+      "x" : "-58.396151",
+      "y" : "-34.596197"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 1084,
+      "descripcion" : "departamento",
+      "x" : "-58.396150",
+      "y" : "-34.596097"
+    },
+    {
+      "calle" : "AYACUCHO",
+      "altura" : 1090,
+      "descripcion" : "negocio de ropa",
+      "x" : "-58.396149",
+      "y" : "-34.595947"
+    }];
+
+	</script>
+</html>
