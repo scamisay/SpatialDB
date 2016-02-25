@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Visualizacion de arbolado de CABA</title>
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+</head>
+<body>
+	<div class="container">		
+		<div class="jumbotron">
+			<h1>Visualización del arbolado de CABA</h1>
+			<p>El propósito de esta guia es mostrar un método para lograr visualizar la población de las principales especies arbóreas porteñas por barrio, teniendo como fuente de información los datos abiertos proporcionados por el censo de la ciudad</p>
+		</div>
+
+		<div class="container">
+			<section class="row">
+    			<h2>1) bajar datos ofrecidos por el gobierno de la ciudad</h2>
+    			<p><a target="_blank" href="http://data.buenosaires.gob.ar/dataset/censo-arbolado/resource/0327e26a-7dc6-4782-87a8-eb87ea51b4be">arbolado-espacios-verdes.csv</a> y <a target="_blank" href="http://data.buenosaires.gob.ar/dataset/censo-arbolado/resource/0d9b7af1-a307-4405-bbad-09fede2018ba">censo-arbolado-2011.csv</a> son los archivos que vamos a utilizar</p>
+    			<p>Estructura de archivos:</p>
+    			<p><strong>arbolado-espacios-verdes(id_arbol; altura_tot; diametro; inclinacion; id_especie; nombre_comun; nombre_cientifico; tipo_follaje; espacio_verde; ubicacion; nombre_familia; nombre_gen; origen; coord_x; coord_y; lat; lon)</strong></p>
+    			<p><strong>censo-arbolado-2011(nombre_barrio; codigo_manzana; alt_ini; alt_fin; calle; coord_x; coord_y; id_especie; nombre_familia; nombre_genero; nombre_cientifico; nombre_comun; tipo_follaje; origen; longitude; latitude; geometry)</strong></p>
+    			<p>TODO: plantear problema de estructuras distintas</p>
+			</section>
+
+			<section class="row">
+    			<h2>2) leer datos desde los archivos y migrarlos a PostgreSQL</h2>
+    			<p>Usaremos <a target="_blank" href="https://es.wikipedia.org/wiki/QGIS">QGIS</a> para importar los CSVs que hemos bajado. Para lograr esto debemos crear una <em>Layer</em> por archivo. Vamos a <strong>Add Delimited Text Layer > Browse...</strong> elegimos nuestro archivo, en este caso <em>arbolado-espacios-verdes.csv</em>. Seleccionamos las opciones que aparecen en el siguiente thumbnail:</p>
+    			<p><img src="img/2-importing_csv.png" class="img-thumbnail"/></p>
+    			<p>Vale la pena destacar que usamos <em>";"</em> como delimitador de campos y que le indicamos a la herramienta que los campos <em>lon</em> y <em>lat</em> deberan ser tomado como <em>(x,y)</em> en el mapa respectivamente. Damos <strong>Ok</strong>, elegimos el sistema de referencias de coordenas <strong>EPSG:4326</strong>.</p>
+    			<p><img src="img/2-map.png" class="img-thumbnail"/></p>
+    			<p>Hacemos lo mismo para el otro archivo, con la salvedad de que esta vez se tomaran <em>longitude</em> y <em>latitude</em> para formar los puntos.</p>
+    			<p>Ahora tenemos que migrar la información que tenemos en las capas a PostgreSQL. Para esto primero debemos crear una conexion con la base. Hacemos click en <strong>Add PostGIS Layers > New</strong> y elegimos nuestra base. En este caso elegi una que ya tengo, <em>spacial</em>. Es importante tener en cuenta que nuestra base debe tener el <em>plugin</em> <strong>postgis</strong>. Replicamos como en la siguiente imagen:</p>
+    			<p><img src="img/2-connection_db.png" class="img-thumbnail"/></p>
+    			<p>Ahora que tenemos nuestra conexión la usaremos para migrar cada una de nuestras campas a la base. Por cada capa se creará una tabla. Ir a <strong>Database > DB Manager > DB Manager</strong></p>
+    			<p><img src="img/2-import_layer_to_db.png" class="img-thumbnail"/></p>
+    			<p>Damos <strong>Ok</strong>, esperamos que QGIS termine de migrar la layer y luego controlamos en la base que se haya dado de alta la tabla con sus tuplas.</p>
+    			<p><img src="img/2-imported.png" class="img-thumbnail"/></p>
+    			<p>Podemos ver que se creó la tabla con el tipo de columna <strong>geometry</strong>, este tipo de dato es muy práctico para el uso de queries espaciales. Repetimos el mismo procedimiento para la otra layer.</p>
+			</section>
+
+			<section class="row">
+    			<h2>3) crear una tabla unificando la información</h2>
+    			<p>Hasta el momento contamos contamos con la información que tenemos en dos tablas distintas. Esto es inconveniente por dos motivos, el primero es que es más complicado realizar queries y el segundo y más importante es que puede haber un mismo árbol cargado en ambas tablas.</p>
+    			<p>dumpeo de consulta a una tabla.</p>
+			</section>
+
+		</div>
+
+	</div>
+	<script type="text/javascript" source="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"></script>
+</body>
+</html>
