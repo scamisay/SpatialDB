@@ -40,9 +40,82 @@
 
 			<section class="row">
     			<h2>3) crear una tabla unificando la información</h2>
-    			<p>Hasta el momento contamos contamos con la información que tenemos en dos tablas distintas. Esto es inconveniente por dos motivos, el primero es que es más complicado realizar queries y el segundo y más importante es que puede haber un mismo árbol cargado en ambas tablas.</p>
-    			<p>dumpeo de consulta a una tabla.</p>
+    			<p>Hasta el momento contamos con la información que tenemos en dos tablas distintas. Esto es inconveniente por dos motivos, el primero es que es más complicado realizar queries y el segundo y más importante es que puede haber un mismo árbol cargado en ambas tablas.</p>
+                <p>POr medio de la siguiente consulta llevaremos la informacion a una nueva tabla llamada <em>arboles</em></p>
+
+                <pre>CREATE TABLE arboles AS
+SELECT geom, nombre_comun
+FROM "arbolado-espacios-verdes"
+UNION
+SELECT geom, nombre_comun
+FROM "censo-arbolado-2011"</pre>
+
 			</section>
+
+            <section class="row">
+                <h2>4) bajar límites de los barrios</h2>
+                <p>Ahora bajamos <a target="_blank" href="http://data.buenosaires.gob.ar/dataset/barrios/resource/5a799833-f2ad-44df-beac-3f17f45d2c19">barrios.zip</a> que es un  <em>shape file</em> con información de los límites de los barrios</p>
+                <p>Lo agregamos como Layer en QGIS con la opción <strong>Add Vector Layer</strong></p>
+                <p><img src="img/4-barrios.png" class="img-thumbnail"/></p>
+                <p>Ahora lo exportamos a POSTGRES</p>
+            </section>
+
+            <section class="row">
+                <h2>5) cantidad de árboles y especies por barrio</h2>
+                <P>Mediante la función ST_CONTAINS() logro relacionar aquellos árboles que están dentro de los límites de cada barrio.</P>
+                <pre>SELECT bc.barrio, count(*) as cantidad, a.nombre_comun
+FROM barrios bc, arboles a
+WHERE ST_CONTAINS(bc.geom, a.geom)
+GROUP BY bc.barrio, a.nombre_comun;</pre>
+
+            </section>
+
+            <section class="row">
+                <h2>6) Averiguo cual es la especie con mayor población por barrio</h2>
+                <p>Para esta consulta tenemos que usar un operador de POSTGRES llamado OVER(), el cuál nos permite quedarnos con los principales resultados obtenidos por un GROUP BY</p>
+                <pre>select barrio, nombre_comun, cantidad,rownum from (
+    select a.barrio, a.cantidad, a.nombre_comun, row_number() over (partition by a.barrio order by  a.cantidad desc) as rownum 
+    from 
+
+(select bc.barrio, count(*) as cantidad, a.nombre_comun
+from barrios bc, arboles a
+where st_contains(bc.geom, a.geom)
+group by bc.barrio, a.nombre_comun
+) a
+                
+ ) tmp
+ where rownum &lt 2;</pre>
+                <p><img src="img/6-barrios_agrupados.png" class="img-thumbnail"/></p>
+                
+            </section>
+
+            <section class="row">
+                <h2>7) Crear mapa temático</h2>
+                <p>Ahora vamos a crear una tabla reporte basada en la consulta anterior para poder pasarla a QGIS, donde haremos nuestro mapa temático</p>
+                <pre>create table reporte as
+select barrio, nombre_comun, cantidad,rownum from (
+    select a.barrio, a.cantidad, a.nombre_comun, row_number() over (partition by a.barrio order by  a.cantidad desc) as rownum 
+    from 
+
+(select bc.barrio, count(*) as cantidad, a.nombre_comun
+from barrios bc, arboles a
+where st_contains(bc.geom, a.geom)
+group by bc.barrio, a.nombre_comun
+) a
+                
+ ) tmp
+ where rownum &lt 2;</pre>
+                <p>Ahora agregamos las columnas cantidad y nombre_comun a la tabla barrios</p>
+                <pre>alter table barrios add column nombre_comun character varying;
+alter table barrios add column cantidad bigint;
+
+update barrios set nombre_comun = r.nombre_comun, cantidad = r.cantidad from reporte r where r.barrio = barrios.barrio;</pre>
+                <p>Finalmente en QGIS con el <strong>Add Postgis Layer</strong> agregamos la layer de barrios basada en la tabla barrios, le elegimos un estilo a la layer categorizada soble <em>nombre_comun</em> y terminamos agregando un label cagegorizado sobre <em>cantidad</em>.</p>
+                <p><img src="img/7-mapa_finalizado.png" class="img-thumbnail"/></p>
+                <p>Podemos concluir que el Fresno Americano es el árbol por excelencia de la ciudad.</p>
+                
+            </section>
+            
 
 		</div>
 
